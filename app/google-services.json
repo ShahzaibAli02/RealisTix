@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "72047128293",
+    "project_id": "realistix-9f4dd",
+    "storage_bucket": "realistix-9f4dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72047128293:android:ca0d83baa6b8b5f40cee0c",
+        "android_client_info": {
+          "package_name": "com.playsnyc.realistix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1ptTFyfFff5WCew0tamgVuHCoTT0QMbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

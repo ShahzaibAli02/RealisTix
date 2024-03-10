@@ -1,0 +1,16 @@
+package com.playsnyc.realistix
+
+object Constants{
+
+    const val MILIS_IN_ONE_SEC: Long=1000L
+    const val INTER_TIMER_SEC = 30* MILIS_IN_ONE_SEC
+
+
+
+    val ACCESS_CODE_LIMIT=8
+    val CHANGE_CALL_INTENT_FILTER="com.mirroring.CHANGE_CALL"
+    val CONNECTED_CALL_INTENT_FILTER="CONNECTED_CALL_INTENT_FILTER"
+    val CHANGE_SETTING_INTENT_FILTER="com.mirroring.CHANGE_SETTINGS"
+    val EXTRA_IN_CALL="EXTRA_IN_CALL"
+    val EXTRA_SETTINGS_CHANGED="EXTRA_SETTINGS_CHANGED"
+}

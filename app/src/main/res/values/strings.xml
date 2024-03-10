@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RealisTix</string>
+    <string name="splash_desc">splash_desc</string>
+    <string name="realistix">RealisTix</string>
+    <string name="login">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="tell_us_about_you">Tell us about you!</string>
+    <string name="occupation">Occupation</string>
+    <string name="organization">Organization</string>
+    <string name="nationality">Naitonality</string>
+    <string name="age">Age</string>
+    <string name="select_ur_fvrt_events">Select your favorite types of events!</string>
+    <string name="how_to_use">How to use ?</string>
+</resources>
