@@ -7,6 +7,8 @@ sealed class Screen(val route: String) {
     object SignUpScreen : Screen("register")
     object HowToUseScreen : Screen("how_to_use")
     object DashBoardScreen : Screen("dashboard")
+    object CreateEventScreen : Screen("create_event")
+    object CreateEventScreen2 : Screen("create_event_2")
 
 
     fun args(vararg args: String): String {

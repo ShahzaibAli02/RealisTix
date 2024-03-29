@@ -93,6 +93,8 @@ dependencies {
 
     implementation("androidx.paging:paging-compose:3.2.1")
 
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
 
 
 }

@@ -13,4 +13,8 @@ object Constants{
     val CHANGE_SETTING_INTENT_FILTER="com.mirroring.CHANGE_SETTINGS"
     val EXTRA_IN_CALL="EXTRA_IN_CALL"
     val EXTRA_SETTINGS_CHANGED="EXTRA_SETTINGS_CHANGED"
+
+}
+object SHARED_PREF_KEYS{
+    val USER_DATA="user_data"
 }

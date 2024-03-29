@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.extensions.connectivityState
 import com.playsnyc.realistix.model.ConnectionState
 import com.playsnyc.realistix.navigation.NavigationView
+import com.playsnyc.realistix.navigation.Screen
+import com.playsnyc.realistix.ui.screens.dashboard.DashBoardScreenPrev
 
 import com.playsnyc.realistix.ui.theme.MyPerColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
@@ -57,6 +60,7 @@ import com.playsnyc.realistix.utils.MyBroadcastReceiver
 
 class StartActivity : ComponentActivity()
 {
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState) //        setTheme(R.style.SplashTheme)
@@ -87,13 +91,19 @@ class StartActivity : ComponentActivity()
                                 broadcastReceiver,
                                 IntentFilter(CHANGE_CALL_INTENT_FILTER)
                         ) // LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(CHANGE_CALL_INTENT_FILTER).putExtra("request_status",true))
+                        if(FirebaseAuth.getInstance().currentUser!=null)
+                        {
+                            navController.navigate(Screen.DashBoardScreen.route){
+                                popUpTo(navController.graph.startDestinationId)
+                                launchSingleTop = true
+                            }
+                        }
                         onDispose {
                             LocalBroadcastManager.getInstance(context)
                                 .unregisterReceiver(broadcastReceiver)
                         }
                     }
                     Column(modifier = Modifier.fillMaxSize()) {
-
                         AnimatedVisibility(visible = !isConnected) {
                             noInternet()
                         }

@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.sealed.Response
 import kotlinx.coroutines.tasks.await
 
-class AuthRepository
+class AuthRepository(private val sharedPref: SharedPref)
 {
 
 

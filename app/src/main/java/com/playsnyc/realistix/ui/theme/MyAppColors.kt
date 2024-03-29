@@ -28,11 +28,15 @@ data class MyAppColors(
     val _283150: Color = Color(color = 0xFF283150),
     val _F4F4F4: Color = Color(color = 0xFFF4F4F4),
     val _A0A0A0: Color = Color(color = 0xFFA0A0A0),
+    val _F3F3F3: Color = Color(color = 0xFFF3F3F3),
     val _07910C: Color = Color(color = 0xFF07910C),
     val _EC1707: Color = Color(color = 0xFFEC1707),
     val _CD0002: Color = Color(color = 0xFFCD0002),
     val _004AAD: Color = Color(color = 0xFF004AAD),
     val _03BF62: Color = Color(color = 0xFF03BF62),
+    val _9A9A9A: Color = Color(color = 0xFF9A9A9A),
+    val _DDDDDD: Color = Color(color = 0xFFDDDDDD),
+    val primary_color: Color = Color(color = 0xFFCF0001),
 ) {
 
 

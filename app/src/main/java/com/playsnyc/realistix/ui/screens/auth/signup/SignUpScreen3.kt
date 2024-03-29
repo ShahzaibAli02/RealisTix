@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,8 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
+import com.playsnyc.realistix.model.isLoading
 import com.playsnyc.realistix.repositories.AuthRepository
 import com.playsnyc.realistix.repositories.FireStoreRepository
+import com.playsnyc.realistix.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.MyFonts
@@ -146,10 +149,12 @@ fun generateItemList(): MutableList<Item> {
 fun SignUpScreen3Prev()
 {
     RealisTixTheme {
+
+        val sharedPref= SharedPref(LocalContext.current)
         SignUpScreen3(
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(),
-                        AuthRepository()
+                        FireStoreRepository(sharedPref),
+                        AuthRepository(sharedPref)
                 )
         )
     }

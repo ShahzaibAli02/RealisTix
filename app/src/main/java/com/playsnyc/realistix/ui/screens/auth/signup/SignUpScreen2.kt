@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,8 +49,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
+import com.playsnyc.realistix.model.isLoading
 import com.playsnyc.realistix.repositories.AuthRepository
 import com.playsnyc.realistix.repositories.FireStoreRepository
+import com.playsnyc.realistix.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.MyPerColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
@@ -102,7 +106,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.name,
+                value = userState.name!!,
                 onValueChange = {
                     viewModel.updateUser { name = it }
                 })
@@ -120,7 +124,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.occupation,
+                value = userState.occupation!!,
                 onValueChange = {
                     viewModel.updateUser { occupation = it }
                 })
@@ -139,7 +143,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.organization,
+                value = userState.organization!!,
                 onValueChange = {
                     viewModel.updateUser { organization = it }
                 })
@@ -159,7 +163,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.nationality,
+                value = userState.nationality!!,
                 onValueChange = {
                     viewModel.updateUser { nationality = it }
                 })
@@ -248,7 +252,7 @@ import com.screen.mirroring.extensions.roundClickable
 
                         viewModel.changeScreen(UiScreens.SIGNUP_SCREEN3)
                     },
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = "Camera"
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -260,10 +264,11 @@ import com.screen.mirroring.extensions.roundClickable
 @Preview(showBackground = true) @Composable fun SignUpScreen2Prev()
 {
     RealisTixTheme {
+        val sharedPref= SharedPref(LocalContext.current)
         SignUpScreen2(
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(),
-                        AuthRepository()
+                        FireStoreRepository(sharedPref),
+                        AuthRepository(sharedPref)
                 )
         )
     }

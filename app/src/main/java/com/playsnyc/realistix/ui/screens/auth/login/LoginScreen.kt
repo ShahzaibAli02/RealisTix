@@ -41,6 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
+import com.playsnyc.realistix.model.errorMessage
+import com.playsnyc.realistix.model.isError
+import com.playsnyc.realistix.model.isLoading
 import com.playsnyc.realistix.navigation.Screen
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.RoundProgress
@@ -96,7 +99,7 @@ import org.koin.androidx.compose.koinViewModel
 
 
         Image(
-                modifier = Modifier.size(com.intuit.sdp.R.dimen._150sdp.toDp()),
+                modifier = Modifier.size(150.dp),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo RX"
         )
@@ -149,7 +152,10 @@ import org.koin.androidx.compose.koinViewModel
                 })
 
 
-        if (uiState.error != null) ErrorText(text = uiState?.error?.errorMessage ?: "")
+        if (uiState.isError)
+        {
+            ErrorText(text = uiState.errorMessage)
+        }
         Spacer(modifier = Modifier.height(30.dp))
         ElevatedButton(modifier = Modifier
             .fillMaxWidth()
@@ -159,7 +165,8 @@ import org.koin.androidx.compose.koinViewModel
                 onClick = {
                     viewModel.login()
                 }) {
-            if (uiState.isLoading) RoundProgress(modifier = Modifier.size(30.dp))
+            if (uiState.isLoading)
+                RoundProgress(modifier = Modifier.size(30.dp))
             else Text(
                     color = MyColors.current._FFFFFF,
                     fontSize = 20.sp,

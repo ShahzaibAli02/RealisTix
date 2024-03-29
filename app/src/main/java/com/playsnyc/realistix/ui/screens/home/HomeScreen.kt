@@ -5,8 +5,9 @@ import androidx.compose.runtime.Composable
 import com.google.firebase.auth.FirebaseAuth
 
 
-@Composable fun HomeScreen()
+@Composable
+fun HomeScreen()
 {
-    val currentUSer= FirebaseAuth.getInstance().currentUser
-    Text("Welcome : ${currentUSer?.email}")
+//    val currentUSer= FirebaseAuth.getInstance().currentUser
+//    Text("Welcome : ${currentUSer?.email}")
 }

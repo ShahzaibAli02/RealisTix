@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="createEvents" type="id" />
+    <item name="editProfile" type="id" />
+    <item name="your_activities" type="id" />
+    <item name="savedEvents" type="id" />
+    <item name="termsConditions" type="id" />
+</resources>

@@ -1,8 +1,5 @@
 package com.playsnyc.realistix.ui.screens.auth.signup
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,9 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.model.SocialMediaItem
+import com.playsnyc.realistix.model.errorMessage
+import com.playsnyc.realistix.model.isError
+import com.playsnyc.realistix.model.isLoading
 import com.playsnyc.realistix.repositories.AuthRepository
 import com.playsnyc.realistix.repositories.FireStoreRepository
+import com.playsnyc.realistix.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.MyColors
@@ -53,7 +52,7 @@ import com.playsnyc.realistix.utils.MyFonts
 @Composable fun SignUpScreen4(viewModel: SignUpScreenViewModel)
 {
     val userState by viewModel.userState.collectAsState()
-    val uiSate by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val itemList = remember { getSocialMediaList().toMutableStateList() }
 
     Column(
@@ -75,9 +74,9 @@ import com.playsnyc.realistix.utils.MyFonts
                 fontFamily = MyFonts.poppins(),
                 fontWeight = FontWeight.Bold
         )
-        if (uiSate.error != null)
+        if (uiState.isError)
         {
-            ErrorText(text = uiSate.error?.errorMessage ?: "")
+            ErrorText(text = uiState.errorMessage)
         }
         Spacer(modifier = Modifier.height(30.dp))
         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -96,7 +95,7 @@ import com.playsnyc.realistix.utils.MyFonts
                 modifier = Modifier.fillMaxWidth(fraction = 0.6f),
                 onClick = {
 
-                    if (uiSate.isLoading) return@ElevatedButton
+                    if (uiState.isLoading) return@ElevatedButton
                     viewModel.updateUser {
                         socialMedia = itemList.filter { it.userName.isBlank().not() }
                     }
@@ -104,7 +103,7 @@ import com.playsnyc.realistix.utils.MyFonts
 
                 }) {
 
-            if (uiSate.isLoading) RoundProgress(modifier = Modifier.size(30.dp))
+            if (uiState.isLoading) RoundProgress(modifier = Modifier.size(30.dp))
             else Text(
                     color = Color.White,
                     text = "DONE!",
@@ -205,11 +204,12 @@ fun getSocialMediaList(): MutableList<SocialMediaItem>
 
 @Preview(showBackground = true) @Composable fun SignUpScreen4Prev()
 {
+    val sharedPref= SharedPref(LocalContext.current)
     RealisTixTheme {
         SignUpScreen4(
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(),
-                        AuthRepository()
+                        FireStoreRepository(sharedPref),
+                        AuthRepository(sharedPref)
                 )
         )
     }

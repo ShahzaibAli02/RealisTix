@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -36,8 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
+import com.playsnyc.realistix.model.errorMessage
+import com.playsnyc.realistix.model.isError
+import com.playsnyc.realistix.model.isLoading
 import com.playsnyc.realistix.repositories.AuthRepository
 import com.playsnyc.realistix.repositories.FireStoreRepository
+import com.playsnyc.realistix.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.MyColors
@@ -83,7 +88,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.name,
+                value = userState.name!!,
                 onValueChange = {
                     viewModel.updateUser { name = it }
                 })
@@ -101,7 +106,7 @@ import com.screen.mirroring.extensions.roundClickable
                             fontFamily = MyFonts.poppins()
                     )
                 },
-                value = userState.email,
+                value = userState.email!!,
                 onValueChange = {
                     viewModel.updateUser { email = it }
                 })
@@ -128,18 +133,18 @@ import com.screen.mirroring.extensions.roundClickable
                     )
                 },
                 supportingText = {
-                    if (userState.password.length < 6) ErrorText(text = "Password should be at least 6 digits")
+                    if (userState.password!!.length < 6) ErrorText(text = "Password should be at least 6 digits")
                 },
-                value = userState.password,
+                value = userState.password!!,
                 onValueChange = {
                     viewModel.updateUser { password = it }
                 })
 
 
 
-        if (uiState.error != null)
+        if (uiState.isError)
         {
-            ErrorText(text = uiState.error?.errorMessage ?: "")
+            ErrorText(text = uiState.errorMessage)
         }
         Spacer(modifier = Modifier.height(30.dp))
         ElevatedButton(modifier = Modifier
@@ -161,7 +166,8 @@ import com.screen.mirroring.extensions.roundClickable
         }
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-                modifier = Modifier.roundClickable { // navHostController.navigateUp()
+                modifier = Modifier.roundClickable {
+//                    uiState.
                 },
                 textAlign = TextAlign.Center,
                 text = "Already registered?\nLog in here",
@@ -177,10 +183,11 @@ import com.screen.mirroring.extensions.roundClickable
 @Preview(showBackground = true) @Composable fun SignUpScreen1Prev()
 {
     RealisTixTheme {
+        val sharedPref= SharedPref(LocalContext.current)
         SignUpScreen1(
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(),
-                        AuthRepository()
+                        FireStoreRepository(sharedPref),
+                        AuthRepository(sharedPref)
                 )
         )
     }
