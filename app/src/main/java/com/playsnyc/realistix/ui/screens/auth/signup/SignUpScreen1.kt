@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
-import com.playsnyc.realistix.model.errorMessage
-import com.playsnyc.realistix.model.isError
-import com.playsnyc.realistix.model.isLoading
-import com.playsnyc.realistix.repositories.AuthRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
-import com.playsnyc.realistix.repositories.SharedPref
+import com.playsnyc.realistix.data.model.errorMessage
+import com.playsnyc.realistix.data.model.isError
+import com.playsnyc.realistix.data.model.isLoading
+import com.playsnyc.realistix.data.repositories.AuthRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.MyColors
@@ -186,7 +186,7 @@ import com.screen.mirroring.extensions.roundClickable
         val sharedPref= SharedPref(LocalContext.current)
         SignUpScreen1(
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(sharedPref),
+                        FireStoreRepository(),
                         AuthRepository(sharedPref)
                 )
         )

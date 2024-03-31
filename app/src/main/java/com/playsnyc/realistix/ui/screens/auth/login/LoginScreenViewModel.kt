@@ -3,10 +3,10 @@ package com.playsnyc.realistix.ui.screens.auth.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.playsnyc.realistix.enums.UiScreens
-import com.playsnyc.realistix.model.Error
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.UIState
-import com.playsnyc.realistix.repositories.AuthRepository
+import com.playsnyc.realistix.data.model.Error
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.UIState
+import com.playsnyc.realistix.data.repositories.AuthRepository
 import com.playsnyc.realistix.sealed.Response
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

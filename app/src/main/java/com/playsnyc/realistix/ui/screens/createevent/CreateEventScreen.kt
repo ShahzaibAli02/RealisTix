@@ -1,5 +1,6 @@
 package com.playsnyc.realistix.ui.screens.createevent
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,35 +26,42 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.playsnyc.realistix.R
-import com.playsnyc.realistix.model.Error
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.errorMessage
-import com.playsnyc.realistix.model.isError
+import com.playsnyc.realistix.data.model.Error
+import com.playsnyc.realistix.data.model.HeaderMessage
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.errorMessage
+import com.playsnyc.realistix.data.model.isError
 import com.playsnyc.realistix.navigation.Screen
-import com.playsnyc.realistix.repositories.DataRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
-import com.playsnyc.realistix.repositories.SharedPref
+import com.playsnyc.realistix.data.repositories.DataRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.EventLocations
 import com.playsnyc.realistix.ui.composables.OutlinedTextField
 import com.playsnyc.realistix.ui.composables.TwoColumnGridCell
 import com.playsnyc.realistix.ui.screens.dashboard.HeaderText
+import com.playsnyc.realistix.ui.screens.dashboard.MessageHeader
 import com.playsnyc.realistix.ui.theme.MyColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.screen.mirroring.extensions.roundClickable
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -62,12 +71,14 @@ import org.koin.androidx.compose.koinViewModel
 )
 {
 
-    LaunchedEffect(Unit) {
-        HeaderText.headerText.emit("Create event")
-    }
+    val coroutineScope = rememberCoroutineScope()
     val typography = MaterialTheme.typography
     val mColors = MyColors.current
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(uiState.state){
+        if(uiState.isError)
+            HeaderText.messageHeader.emit(HeaderMessage.Error(message =uiState.errorMessage ))
+    }
     Box (modifier = Modifier
         .fillMaxSize()
         .padding(10.dp)
@@ -163,7 +174,7 @@ import org.koin.androidx.compose.koinViewModel
                             unfocusedBorderColor = MyColors.current._000000
                     ),
                     contentPadding = PaddingValues(5.dp),
-                    maxLines = 2,
+                    maxLines = 5,
                     placeholder = {
                         Text(
                                 text = "Add more details about your event & include what people can expect if they attend",
@@ -184,9 +195,13 @@ import org.koin.androidx.compose.koinViewModel
             )
             Spacer(modifier = Modifier.height(5.dp))
             EventLocations(onEventClicked = {
-                uiState.data!!.locationType = it
+//                uiState.data!!.locationType = it
+                viewModel.updateDataState {
+                    locationType = it
+                }
             })
             Spacer(modifier = Modifier.height(5.dp))
+            if(uiState.data!!.locationType!="To be announced")
             OutlinedTextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp),
@@ -200,7 +215,7 @@ import org.koin.androidx.compose.koinViewModel
                     placeholder = {
 
                     val icon= if(uiState.data!!.locationType=="Online") R.drawable.baseline_link_24 else R.drawable.baseline_search_24
-                    val searchText= if(uiState.data!!.locationType=="Online") "Meeting Link here.." else "Search for a venue or address"
+                    val searchText= if(uiState.data!!.locationType=="Online") "Meeting Link here.." else "Search for a venue or type address"
                     Row{
                             Image(
                                     modifier = Modifier.size(20.dp),
@@ -222,10 +237,6 @@ import org.koin.androidx.compose.koinViewModel
                         }
                     })
 
-            if (uiState.isError)
-            {
-                ErrorText(text = uiState.errorMessage ?: "")
-            }
             Spacer(modifier = Modifier.height(20.dp))
             Icon(
                     modifier = Modifier
@@ -255,6 +266,7 @@ import org.koin.androidx.compose.koinViewModel
 
 
 }
+
 
 @Composable private fun EventTypes(eventTypes: List<String>,onEventSelected:(String)->Unit)
 {
@@ -287,7 +299,7 @@ import org.koin.androidx.compose.koinViewModel
                 CreateEventScreenViewModel(
                         DataRepository(
                                 SharedPref(context),
-                        FireStoreRepository(SharedPref(context))
+                        FireStoreRepository()
                 )
                 )
         )

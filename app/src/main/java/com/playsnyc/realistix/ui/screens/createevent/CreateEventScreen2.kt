@@ -44,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -66,16 +67,17 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.playsnyc.realistix.R
-import com.playsnyc.realistix.model.HeaderMessage
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.errorMessage
-import com.playsnyc.realistix.model.isError
-import com.playsnyc.realistix.model.isLoading
-import com.playsnyc.realistix.model.isSuccess
+import com.playsnyc.realistix.data.model.Error
+import com.playsnyc.realistix.data.model.HeaderMessage
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.errorMessage
+import com.playsnyc.realistix.data.model.isError
+import com.playsnyc.realistix.data.model.isLoading
+import com.playsnyc.realistix.data.model.isSuccess
 import com.playsnyc.realistix.navigation.Screen
-import com.playsnyc.realistix.repositories.DataRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
-import com.playsnyc.realistix.repositories.SharedPref
+import com.playsnyc.realistix.data.repositories.DataRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.DialogLoadingTextView
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.OutlinedTextField
@@ -97,11 +99,10 @@ import java.util.Locale
 )
 {
 
-
     val selectedImages by viewModel.selectedImages.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-
+    val coroutineScope= rememberCoroutineScope()
     val pickImagesLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickMultipleVisualMedia(5),
     ) { uris ->
@@ -130,7 +131,7 @@ import java.util.Locale
     if (uiState.isLoading)
     {
         val message = uiState.state.message
-        val progress = (uiState.state as ScreenState.Loading).progress / 100f
+        val progress = (uiState.state as ScreenState.Loading).progress/100f
         DialogLoadingTextView(
                 modifier = Modifier.fillMaxWidth(),
                 progress = progress,
@@ -168,6 +169,10 @@ import java.util.Locale
 
             if (uiState.isError)
             {
+
+//                SideEffect{
+//                    coroutineScope.launch { HeaderText.messageHeader.emit(HeaderMessage.Error(message =uiState.errorMessage  )) }
+//                }
                 ErrorText(
                         textAlign = TextAlign.Center,
                         text = uiState.errorMessage
@@ -595,7 +600,7 @@ fun formatTime(date: Date): String
                 CreateEventScreenViewModel(
                         DataRepository(
                                 SharedPref(context),
-                                FireStoreRepository(SharedPref(context))
+                                FireStoreRepository()
                         )
                 )
         )

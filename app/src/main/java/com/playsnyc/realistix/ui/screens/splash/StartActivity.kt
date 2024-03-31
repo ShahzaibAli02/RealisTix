@@ -49,7 +49,7 @@ import com.playsnyc.realistix.utils.MyFonts
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.extensions.connectivityState
-import com.playsnyc.realistix.model.ConnectionState
+import com.playsnyc.realistix.data.model.ConnectionState
 import com.playsnyc.realistix.navigation.NavigationView
 import com.playsnyc.realistix.navigation.Screen
 import com.playsnyc.realistix.ui.screens.dashboard.DashBoardScreenPrev
@@ -94,7 +94,9 @@ class StartActivity : ComponentActivity()
                         if(FirebaseAuth.getInstance().currentUser!=null)
                         {
                             navController.navigate(Screen.DashBoardScreen.route){
-                                popUpTo(navController.graph.startDestinationId)
+                                popUpTo(navController.graph.startDestinationRoute!!) {
+                                    inclusive = true
+                                }
                                 launchSingleTop = true
                             }
                         }

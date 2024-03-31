@@ -9,6 +9,8 @@ sealed class Screen(val route: String) {
     object DashBoardScreen : Screen("dashboard")
     object CreateEventScreen : Screen("create_event")
     object CreateEventScreen2 : Screen("create_event_2")
+    object EventScreenDetail : Screen("event_screen_detail")
+    object EventBookingScreen : Screen("event_booking_screen")
 
 
     fun args(vararg args: String): String {

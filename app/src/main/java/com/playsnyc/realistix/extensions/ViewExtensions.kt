@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
-import com.playsnyc.realistix.model.ConnectionState
+import com.playsnyc.realistix.data.model.ConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,7 +42,8 @@ val Context.currentConnectivityState: ConnectionState
 
 private fun getCurrentConnectivityState(
     connectivityManager: ConnectivityManager
-): ConnectionState {
+): ConnectionState
+{
     val connected = connectivityManager.allNetworks.any { network ->
         connectivityManager.getNetworkCapabilities(network)
             ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)

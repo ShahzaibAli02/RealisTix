@@ -1,4 +1,4 @@
-package com.playsnyc.realistix.repositories
+package com.playsnyc.realistix.data.repositories
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth

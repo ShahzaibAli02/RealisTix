@@ -1,11 +1,11 @@
-package com.playsnyc.realistix.model
+package com.playsnyc.realistix.data.model
 
 import com.playsnyc.realistix.enums.UiScreens
 
 data class UIState<T>(
     var uiScreen: UiScreens = UiScreens.NONE,
     var data:T ? = null,
-    var state:ScreenState=ScreenState.None()
+    var state: ScreenState = ScreenState.None()
 )
 
 val <T> UIState<T>.isLoading: Boolean

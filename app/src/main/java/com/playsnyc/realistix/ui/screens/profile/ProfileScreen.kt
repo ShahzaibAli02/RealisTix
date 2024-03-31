@@ -39,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,18 +51,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import com.playsnyc.realistix.R
-import com.playsnyc.realistix.model.ProfileOption
-import com.playsnyc.realistix.model.errorMessage
-import com.playsnyc.realistix.model.isError
-import com.playsnyc.realistix.model.isLoading
+import com.playsnyc.realistix.data.model.ProfileOption
+import com.playsnyc.realistix.data.model.errorMessage
+import com.playsnyc.realistix.data.model.isError
+import com.playsnyc.realistix.data.model.isLoading
 import com.playsnyc.realistix.navigation.Screen
-import com.playsnyc.realistix.repositories.DataRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
-import com.playsnyc.realistix.repositories.SharedPref
+import com.playsnyc.realistix.data.repositories.DataRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.screens.dashboard.HeaderText
 import com.playsnyc.realistix.ui.theme.MyColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
+import com.playsnyc.realistix.utils.MyUtils
 import com.screen.mirroring.extensions.roundClickable
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
@@ -109,10 +112,11 @@ import java.util.Vector
 )
 {
 
-
+    val context= LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { //            viewModel.uploadImage(it)
+        uri?.let {
+//                    viewModel.uploadImage(it)
         }
     }
     val typography = MaterialTheme.typography
@@ -123,6 +127,7 @@ import java.util.Vector
                 .roundClickable {
                     launcher.launch("image/*")
                 },
+            contentScale= ContentScale.Crop,
             model = uiState.data?.image,
             error = {
                 Image(
@@ -155,6 +160,21 @@ import java.util.Vector
             if (it.id == R.id.createEvents)
             {
                 navController.navigate(Screen.CreateEventScreen.route)
+            }
+            if (it.id == R.id.privacy_policy)
+            {
+              MyUtils.openUrl(context,context.getString(R.string.privacy_policy))
+            }
+            if (it.id == R.id.termsConditions)
+            {
+                MyUtils.openUrl(context,context.getString(R.string.terms_condition))
+            }
+            if (it.id == R.id.log_out)
+            {
+              navController.navigate(Screen.LoginScreen.route){
+                  popUpTo(Screen.LoginScreen.route)
+                  launchSingleTop
+              }
             }
         }
     }
@@ -249,8 +269,12 @@ import java.util.Vector
     RealisTixTheme {
         ProfileScreen(
                 navController = NavHostController(LocalContext.current),
-                viewModel = ProfileViewModel(DataRepository(SharedPref(LocalContext.current)
-                        ,FireStoreRepository(SharedPref(LocalContext.current)))
+                viewModel = ProfileViewModel(
+                        DataRepository(
+                                SharedPref(LocalContext.current)
+                        ,
+                                FireStoreRepository()
+                        )
         ))
     }
 

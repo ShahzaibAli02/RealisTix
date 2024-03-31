@@ -15,4 +15,7 @@
     <string name="select_ur_fvrt_events">Select your favorite types of events!</string>
     <string name="how_to_use">How to use ?</string>
     <string name="publish_your_event">PUBLISH YOUR EVENT</string>
+    <string name="confirm_your_availability">CONFIRM YOUR AVAILABILITY</string>
+    <string name="privacy_policy">https://sites.google.com/view/newfreeapps/privacy-policy</string>
+    <string name="terms_condition">https://sites.google.com/view/newfreeapps/privacy-policy</string>
 </resources>

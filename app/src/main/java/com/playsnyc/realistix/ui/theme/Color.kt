@@ -18,5 +18,5 @@ val OnLightMyAppColors = MyAppColors(
 
 val OnDarkMyAppColors = MyAppColors(
     _C5BBC8 = Color(color = 0xFFC5BBC8),
-    _FFFFFF = Color(color = 0xFF494747),
+//    _FFFFFF = Color(color = 0xFF494747),
 )

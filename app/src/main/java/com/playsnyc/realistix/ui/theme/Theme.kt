@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -60,36 +61,40 @@ fun RealisTixTheme(
 
     val Typography = Typography(
             bodyLarge = TextStyle(
-                    fontFamily = MyFonts.poppins(), fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp
-            )/* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+                    fontFamily = MyFonts.poppins(),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    letterSpacing = 0.5.sp
+            ),
+            titleMedium = Typography().titleMedium.copy(fontFamily = MyFonts.poppins()),
+            titleLarge = Typography().titleLarge.copy(fontSize = 19.sp,fontFamily = MyFonts.poppins()),
+            titleSmall = Typography().titleSmall.copy(fontFamily = MyFonts.poppins()),
+            headlineMedium = Typography().headlineMedium.copy(fontFamily = MyFonts.poppins()),
+            headlineSmall = Typography().headlineSmall.copy(fontFamily = MyFonts.poppins()),
+            headlineLarge = Typography().headlineLarge.copy(fontFamily = MyFonts.poppins()), //    labelSmall = TextStyle(
+            //        fontFamily = FontFamily.Default,
+            //        fontWeight = FontWeight.Medium,
+            //        fontSize = 11.sp,
+            //        lineHeight = 16.sp,
+            //        letterSpacing = 0.5.sp
+            //    )
+            //
     )
-    */
-    )
+//
+//    val colorScheme = when
+//    {
+//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+//        {
+//            val context = LocalContext.current
+//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//        }
+//
+//        darkTheme -> DarkColorScheme
+//        else -> LightColorScheme
+//    }
 
-    val colorScheme = when
-    {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
-        {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = LightColorScheme
     val view = LocalView.current
     if (!view.isInEditMode)
     {

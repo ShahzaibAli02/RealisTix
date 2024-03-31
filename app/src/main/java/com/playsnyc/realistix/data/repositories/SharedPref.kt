@@ -1,4 +1,4 @@
-package com.playsnyc.realistix.repositories
+package com.playsnyc.realistix.data.repositories
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

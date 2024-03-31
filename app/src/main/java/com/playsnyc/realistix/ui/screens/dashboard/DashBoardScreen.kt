@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,10 +54,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.initialize
 import com.playsnyc.realistix.R
-import com.playsnyc.realistix.model.HeaderMessage
+import com.playsnyc.realistix.data.enums.BottomNavItems
+import com.playsnyc.realistix.data.model.HeaderMessage
 import com.playsnyc.realistix.navigation.Screen
 import com.playsnyc.realistix.ui.screens.createevent.CreateEventScreen
 import com.playsnyc.realistix.ui.screens.createevent.CreateEventScreen2
+import com.playsnyc.realistix.ui.screens.home.EventDetailScreen
 import com.playsnyc.realistix.ui.screens.home.HomeScreen
 import com.playsnyc.realistix.ui.screens.profile.ProfileScreen
 import com.playsnyc.realistix.ui.theme.MyColors
@@ -79,44 +82,37 @@ object HeaderText
 
 @Composable fun DashBoardScreen(mainNavController: NavHostController)
 {
-
-    var backButtonVisibility  by remember{ mutableStateOf(false) }
+    var backButtonVisibility by remember { mutableStateOf(false) }
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    backButtonVisibility=BottomNavItems.entries.find { currentRoute==it.route}==null
+    backButtonVisibility = BottomNavItems.entries.find { currentRoute == it.route } == null
     Scaffold(bottomBar = {
         BottomNavigationBar(navController)
     }) { innerPadding ->
 
         var headerText by rememberSaveable { mutableStateOf("") }
         var messageHeader by rememberSaveable { mutableStateOf<HeaderMessage?>(null) }
+        headerText = getHeaderText(currentRoute)
         LaunchedEffect(Unit) {
             launch {
-                HeaderText.headerText.collectLatest {
-                    headerText = it
-                }
-            }
-            launch {
                 HeaderText.messageHeader.collectLatest {
-                    messageHeader=it
+                    messageHeader = it
                     delay(1000)
-                    messageHeader=null
+                    messageHeader = null
                 }
             }
 
         }
         Column(modifier = Modifier.padding(innerPadding)) {
             MessageHeader(messageHeader)
-            Header(
-                    modifier = Modifier.fillMaxWidth(),
+            Header(modifier = Modifier.fillMaxWidth(),
                     showBack = backButtonVisibility,
                     onBackPressed = {
                         navController.navigateUp()
-                    }
-            )
+                    })
             SubHeader(
-                    modifier = Modifier.background(MyColors.current._FFFFFF),
+                    modifier = Modifier,
                     headerText
             )
             BottomNavigationView(
@@ -131,16 +127,21 @@ object HeaderText
     }
 }
 
-@Composable fun MessageHeader(message:HeaderMessage?)
+
+@Composable fun MessageHeader(message: HeaderMessage?)
 {
-    if(message==null) return
-    val typography=MaterialTheme.typography
+    if (message == null) return
+    val typography = MaterialTheme.typography
     Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(message.backGroundColor)  .padding(10.dp),
+                .background(message.backGroundColor)
+                .padding(10.dp),
             text = message.message,
-            style = typography.titleMedium.copy(color=message.textColor, textAlign = TextAlign.Center),
+            style = typography.titleMedium.copy(
+                    color = message.textColor,
+                    textAlign = TextAlign.Center
+            ),
     )
 
 }
@@ -148,24 +149,23 @@ object HeaderText
 @Preview @Composable fun HeaderPrev()
 {
 
-    val header=HeaderMessage("Test Message")
-    MessageHeader((header))
+    val header = HeaderMessage("Test Message")
+    SubHeader(text = "Event")
 }
 
 @Composable fun Header(modifier: Modifier = Modifier, showBack: Boolean, onBackPressed: () -> Unit)
 {
     Column(modifier) {
         Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                ,
+                modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
         ) {
             if (showBack)
             {
                 Icon(
                         modifier = Modifier
-                            .size(50.dp)
+                            .padding(start = 10.dp)
+                            .size(40.dp)
                             .roundClickable {
                                 onBackPressed()
                             },
@@ -177,13 +177,14 @@ object HeaderText
             Image(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(60.dp),
+                        .size(40.dp),
                     painter = painterResource(id = R.drawable.logo),
+                    contentScale = ContentScale.Crop,
                     contentDescription = ""
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp))
         Divider()
     }
 }
@@ -206,84 +207,6 @@ object HeaderText
 
 }
 
-@Composable fun BottomNavigationBar(navController: NavController)
-{
-    val typography = MaterialTheme.typography
-    BottomNavigation(backgroundColor = MyPerColors._FFFFFF) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
-        BottomNavItems.entries.forEach { item ->
-            BottomNavigationItem(selected = currentRoute == item.route,
-                    onClick = {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
-                        }
-                    },
-                    icon = {
-                        Image(
-                                modifier = Modifier.size(
-                                        width = 40.dp,
-                                        height = 40.dp
-                                ),
-                                painter = painterResource(id = if (currentRoute == item.route) item.selectedIcon else item.unselectedIcon),
-                                contentDescription = null
-                        )
-                    },
-                    label = {
-                        Text(
-                                text = item.name,
-                                style = typography.titleSmall
-                        )
-
-                    })
-        }
-    }
-}
-
-@Composable fun BottomNavigationView(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
-)
-{
-    val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    }
-
-    NavHost(
-            modifier = modifier,
-            navController = navController,
-            startDestination = BottomNavItems.Profile.route
-    ) {
-        composable(BottomNavItems.Home.route) {
-            HomeScreen()
-        }
-        composable(BottomNavItems.Discover.route) {
-            HomeScreen()
-        }
-        composable(BottomNavItems.Contact.route) {
-            HomeScreen()
-        }
-        composable(BottomNavItems.Profile.route) {
-            ProfileScreen(navController)
-        }
-        composable(Screen.CreateEventScreen.route) {
-            CreateEventScreen(
-                    navController,
-                    viewModel = koinViewModel(viewModelStoreOwner = viewModelStoreOwner)
-            )
-        }
-        composable(Screen.CreateEventScreen2.route) {
-            CreateEventScreen2(
-                    navController,
-                    viewModel = koinViewModel(viewModelStoreOwner = viewModelStoreOwner)
-            )
-        }
-
-
-    }
-}
 
 @Preview(showBackground = true) @Composable fun DashBoardScreenPrev()
 {
@@ -292,36 +215,17 @@ object HeaderText
     }
 }
 
-enum class BottomNavItems(
-    val title: String,
-    val selectedIcon: Int,
-    val unselectedIcon: Int,
-    val route: String,
-)
-{
-    Home(
-            "Home",
-            R.drawable.home_selected,
-            R.drawable.home_unselected,
-            "Home"
-    ),
-    Discover(
-            "Discover",
-            R.drawable.discover_selected,
-            R.drawable.discover_unselected,
 
-            "Discover"
-    ),
-    Contact(
-            "Contact",
-            R.drawable.contact_selected,
-            R.drawable.contact_unselected,
-            "Contact"
-    ),
-    Profile(
-            "Profile",
-            R.drawable.profile_selected,
-            R.drawable.profile_unselected,
-            "Profile"
-    ),
+fun getHeaderText(currentRoute: String?): String
+{
+    return when (currentRoute)
+    {
+        BottomNavItems.Home.route -> "Events"
+        BottomNavItems.Discover.route -> "Discover"
+        BottomNavItems.Contact.route -> "Contact"
+        BottomNavItems.Profile.route -> "Profile"
+        Screen.CreateEventScreen.route, Screen.CreateEventScreen2.route -> "Create Event"
+        Screen.EventScreenDetail.route, Screen.EventBookingScreen.route -> "Event"
+        else -> ""
+    }
 }

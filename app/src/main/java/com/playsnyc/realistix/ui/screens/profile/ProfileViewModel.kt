@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.R
-import com.playsnyc.realistix.model.Error
-import com.playsnyc.realistix.model.ProfileOption
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.UIState
-import com.playsnyc.realistix.model.User
-import com.playsnyc.realistix.repositories.DataRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.model.Error
+import com.playsnyc.realistix.data.model.ProfileOption
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.UIState
+import com.playsnyc.realistix.data.model.User
+import com.playsnyc.realistix.data.repositories.DataRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
 import com.playsnyc.realistix.sealed.Response
 import com.playsnyc.realistix.ui.screens.auth.StartScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,10 +55,15 @@ class ProfileViewModel(val dataRepository: DataRepository) : ViewModel()
                     image = R.drawable.baseline_feed_24
             ),
             ProfileOption(
-                    id = R.id.createEvents,
+                    id = R.id.privacy_policy,
                     title = "Privacy Policy",
                     image = R.drawable.baseline_privacy_tip_24
-            )
+            ),
+            ProfileOption(
+                    id = R.id.log_out,
+                    title = "Log Out",
+                    image = R.drawable.baseline_logout_24
+            ),
     )
 
 
@@ -76,7 +81,7 @@ class ProfileViewModel(val dataRepository: DataRepository) : ViewModel()
             is Response.Success ->
             {
                 updateUiState {
-                    state =ScreenState.None();data = result.data
+                    state = ScreenState.None();data = result.data
                 }
             }
         }

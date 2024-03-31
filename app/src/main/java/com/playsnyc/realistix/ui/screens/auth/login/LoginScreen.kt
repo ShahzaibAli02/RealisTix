@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.enums.UiScreens
-import com.playsnyc.realistix.model.errorMessage
-import com.playsnyc.realistix.model.isError
-import com.playsnyc.realistix.model.isLoading
+import com.playsnyc.realistix.data.model.errorMessage
+import com.playsnyc.realistix.data.model.isError
+import com.playsnyc.realistix.data.model.isLoading
 import com.playsnyc.realistix.navigation.Screen
 import com.playsnyc.realistix.ui.composables.ErrorText
 import com.playsnyc.realistix.ui.composables.RoundProgress

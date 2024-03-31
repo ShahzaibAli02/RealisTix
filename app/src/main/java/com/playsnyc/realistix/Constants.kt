@@ -5,6 +5,7 @@ object Constants{
     const val MILIS_IN_ONE_SEC: Long=1000L
     const val INTER_TIMER_SEC = 30* MILIS_IN_ONE_SEC
 
+    const val EVENTS_PAGE_SIZE=4
 
 
     val ACCESS_CODE_LIMIT=8

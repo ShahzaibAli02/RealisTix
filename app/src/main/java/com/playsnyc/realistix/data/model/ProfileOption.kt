@@ -1,4 +1,4 @@
-package com.playsnyc.realistix.model
+package com.playsnyc.realistix.data.model
 
 import androidx.annotation.DrawableRes
 

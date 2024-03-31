@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.playsnyc.realistix.model.Event
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.UIState
-import com.playsnyc.realistix.repositories.DataRepository
+import com.playsnyc.realistix.data.model.Event
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.UIState
+import com.playsnyc.realistix.data.repositories.DataRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +40,7 @@ class CreateEventScreenViewModel(val dataRepository: DataRepository):ViewModel()
     fun validateFirstPage(): Boolean
     {
         val data=uiState.value.data!!
-        return !(data.name.isBlank() || data.organizer.isBlank() || data.type.isBlank() || data.description.isBlank() || data.address.isBlank())
+        return !(data.name.isBlank() || data.organizer.isBlank() || data.type.isBlank() || data.description.isBlank() || (data.locationType!="To be announced" && data.address.isBlank()))
     }
 
     fun cancelUpload()
@@ -48,7 +48,7 @@ class CreateEventScreenViewModel(val dataRepository: DataRepository):ViewModel()
 
         job?.cancel()
         updateUiState{
-            state=ScreenState.None()
+            state= ScreenState.None()
         }
     }
     fun postEvent(){
@@ -79,7 +79,7 @@ class CreateEventScreenViewModel(val dataRepository: DataRepository):ViewModel()
         if(errorMessage.isNotBlank())
         {
             updateUiState {
-                state=ScreenState.Error(errorMessage)
+                state= ScreenState.Error(errorMessage)
             }
         }
 

@@ -1,18 +1,26 @@
-package com.playsnyc.realistix.repositories
+package com.playsnyc.realistix.data.repositories
 
 import android.net.Uri
-import androidx.compose.ui.util.fastForEachIndexed
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.playsnyc.realistix.SHARED_PREF_KEYS
-import com.playsnyc.realistix.model.Event
-import com.playsnyc.realistix.model.ScreenState
-import com.playsnyc.realistix.model.User
+import com.playsnyc.realistix.data.datasource.EventDataSource
+import com.playsnyc.realistix.data.model.Event
+import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.User
 import com.playsnyc.realistix.sealed.Response
-import kotlinx.coroutines.yield
+import com.playsnyc.realistix.utils.toJson
+import kotlinx.coroutines.flow.Flow
 
-class DataRepository(private val sharedPref: SharedPref,val firestoreRepo:FireStoreRepository)
+class DataRepository(private val sharedPref: SharedPref, private val firestoreRepo: FireStoreRepository)
 {
+    private val eventDataSource: EventDataSource by lazy {
+        EventDataSource(firestoreRepo)
+    }
 
     suspend fun getUser(uid:String?): Response<User>
     {
@@ -24,6 +32,7 @@ class DataRepository(private val sharedPref: SharedPref,val firestoreRepo:FireSt
                 {
                     val user= Gson().fromJson(userJson,
                             User::class.java)
+                    sharedPref.set(SHARED_PREF_KEYS.USER_DATA,user.toJson())
                     if(user!=null && user.uid==uid)
                         return Response.Success(user)
                 }
@@ -34,7 +43,29 @@ class DataRepository(private val sharedPref: SharedPref,val firestoreRepo:FireSt
         return Response.Error("")
     }
 
-    suspend  fun postEvent(images:List<Uri>,data: Event,onUpdate:(state: ScreenState)->Unit)
+
+//    suspend fun loadEvents(): Response<List<Event>>
+//    {
+//        if (uid==null)
+//            return Response.Error("User id is null")
+//        runCatching {
+//            sharedPref.getString(SHARED_PREF_KEYS.USER_DATA)?.let { userJson->
+//                if(userJson.isBlank().not())
+//                {
+//                    val user= Gson().fromJson(userJson,
+//                            User::class.java)
+//                    sharedPref.set(SHARED_PREF_KEYS.USER_DATA,user.toJson())
+//                    if(user!=null && user.uid==uid)
+//                        return Response.Success(user)
+//                }
+//
+//            }
+//            return  firestoreRepo.getUserFromServer(uid)
+//        }
+//        return Response.Error("")
+//    }
+
+    suspend  fun postEvent(images:List<Uri>, data: Event, onUpdate:(state: ScreenState)->Unit)
     {
         val mUid= FirebaseAuth.getInstance().currentUser?.uid
         if(mUid==null)
@@ -48,7 +79,7 @@ class DataRepository(private val sharedPref: SharedPref,val firestoreRepo:FireSt
         images.forEachIndexed { index, uri ->
             val imageLink=firestoreRepo.uploadFile(uri)
 
-            val progress=(index+1)/images.size
+            val progress: Int = ((index + 1).toDouble() / images.size * 100).toInt()
             if(imageLink is Response.Success)
             {
                 imagesLink.add(imageLink.data!!)
@@ -69,6 +100,19 @@ class DataRepository(private val sharedPref: SharedPref,val firestoreRepo:FireSt
             is Response.Success ->onUpdate(ScreenState.Success("Done"))
         }
 
+    }
+
+
+
+
+    fun fetchNextPage(pageSize: Int): Flow<PagingData<Event>>
+    {
+        return Pager(
+                config = PagingConfig(pageSize),
+                pagingSourceFactory = {
+                    eventDataSource
+                }
+        ).flow
     }
 
 }

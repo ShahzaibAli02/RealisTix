@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.playsnyc.realistix.enums.UiScreens
 import com.playsnyc.realistix.navigation.Screen
-import com.playsnyc.realistix.repositories.AuthRepository
-import com.playsnyc.realistix.repositories.FireStoreRepository
-import com.playsnyc.realistix.repositories.SharedPref
+import com.playsnyc.realistix.data.repositories.AuthRepository
+import com.playsnyc.realistix.data.repositories.FireStoreRepository
+import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.BackPressHandler
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import org.koin.androidx.compose.koinViewModel
@@ -96,12 +96,12 @@ fun getPrevScreen(uiState: UiScreens): UiScreens
 {
     RealisTixTheme {
 
-        val sharedPref=SharedPref(LocalContext.current)
+        val sharedPref= SharedPref(LocalContext.current)
         SignUpScreen(
 
                 NavHostController(LocalContext.current),
                 viewModel = SignUpScreenViewModel(
-                        FireStoreRepository(sharedPref),
+                        FireStoreRepository(),
                         AuthRepository(sharedPref)
                 )
         )

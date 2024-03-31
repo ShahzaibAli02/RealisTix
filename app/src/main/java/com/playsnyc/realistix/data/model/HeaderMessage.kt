@@ -1,6 +1,14 @@
-package com.playsnyc.realistix.model
+package com.playsnyc.realistix.data.model
 
 import androidx.compose.ui.graphics.Color
 import com.playsnyc.realistix.ui.theme.MyPerColors
 
 data class HeaderMessage(val message:String, val backGroundColor:Color= MyPerColors._004AAD, val textColor:Color=Color.White)
+{
+    companion object
+}
+
+fun HeaderMessage.Companion.Error(message:String):HeaderMessage
+{
+    return HeaderMessage(backGroundColor=Color.Red, message = message)
+}
