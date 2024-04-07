@@ -47,7 +47,7 @@ import com.playsnyc.realistix.data.repositories.SharedPref
 import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.MyFonts
-import com.screen.mirroring.extensions.roundClickable
+import com.playsnyc.realistix.extensions.roundClickable
 
 @Composable fun SignUpScreen3(viewModel: SignUpScreenViewModel)
 {

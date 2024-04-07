@@ -1,6 +1,7 @@
 package com.playsnyc.realistix.utils
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -29,6 +30,24 @@ object DateTimeFormmater
             ).format(date)
         }
         return ""
+    }
+
+
+    fun getCurrentDate(): Long {
+        val currentDate = Calendar.getInstance()
+        currentDate.set(Calendar.HOUR_OF_DAY, 0)
+        currentDate.set(Calendar.MINUTE, 0)
+        currentDate.set(Calendar.SECOND, 0)
+        currentDate.set(Calendar.MILLISECOND, 0)
+        return currentDate.timeInMillis
+    }
+
+    fun getCurrentTime(): Long {
+        val currentTime = Calendar.getInstance()
+        currentTime.set(Calendar.YEAR, 0)
+        currentTime.set(Calendar.MONTH, 0)
+        currentTime.set(Calendar.DAY_OF_MONTH, 0)
+        return currentTime.timeInMillis
     }
 
 

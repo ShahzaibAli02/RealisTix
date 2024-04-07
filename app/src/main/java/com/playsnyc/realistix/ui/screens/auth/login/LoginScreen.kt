@@ -51,9 +51,7 @@ import com.playsnyc.realistix.ui.theme.MyColors
 import com.playsnyc.realistix.ui.theme.MyPerColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.MyFonts
-import com.playsnyc.realistix.utils.MyPermissionHelper
-import com.screen.mirroring.extensions.roundClickable
-import com.screen.mirroring.extensions.toDp
+import com.playsnyc.realistix.extensions.roundClickable
 import org.koin.androidx.compose.koinViewModel
 
 //val context = LocalContext.current

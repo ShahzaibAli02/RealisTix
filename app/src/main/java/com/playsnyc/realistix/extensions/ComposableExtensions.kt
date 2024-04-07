@@ -1,4 +1,4 @@
-package com.screen.mirroring.extensions
+package com.playsnyc.realistix.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.playsnyc.realistix.extensions.shouldAllowClick
 
 
 //var mLastClickTime: Long = 0

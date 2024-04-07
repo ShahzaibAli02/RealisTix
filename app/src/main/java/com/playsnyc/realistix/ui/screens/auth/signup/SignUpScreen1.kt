@@ -49,7 +49,7 @@ import com.playsnyc.realistix.ui.theme.MyColors
 import com.playsnyc.realistix.ui.theme.MyPerColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.MyFonts
-import com.screen.mirroring.extensions.roundClickable
+import com.playsnyc.realistix.extensions.roundClickable
 
 @Composable fun SignUpScreen1(viewModel: SignUpScreenViewModel)
 {

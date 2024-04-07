@@ -2,6 +2,7 @@ package com.playsnyc.realistix.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.data.model.Error
@@ -34,11 +35,11 @@ class ProfileViewModel(val dataRepository: DataRepository) : ViewModel()
                     title = "Create Events",
                     image = R.drawable.baseline_share_24
             ),
-            ProfileOption(
-                    id = R.id.editProfile,
-                    title = "Edit Profile",
-                    image = R.drawable.baseline_key_24
-            ),
+//            ProfileOption(
+//                    id = R.id.editProfile,
+//                    title = "Edit Profile",
+//                    image = R.drawable.baseline_key_24
+//            ),
             ProfileOption(
                     id = R.id.your_activities,
                     title = "Your Activities",

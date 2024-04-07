@@ -9,12 +9,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.playsnyc.realistix.SHARED_PREF_KEYS
 import com.playsnyc.realistix.data.datasource.EventDataSource
+import com.playsnyc.realistix.data.model.Connection
+import com.playsnyc.realistix.data.model.ConnectionNumber
 import com.playsnyc.realistix.data.model.Event
 import com.playsnyc.realistix.data.model.ScreenState
 import com.playsnyc.realistix.data.model.User
 import com.playsnyc.realistix.sealed.Response
 import com.playsnyc.realistix.utils.toJson
 import kotlinx.coroutines.flow.Flow
+import java.util.Random
 
 class DataRepository(private val sharedPref: SharedPref, private val firestoreRepo: FireStoreRepository)
 {
@@ -42,28 +45,23 @@ class DataRepository(private val sharedPref: SharedPref, private val firestoreRe
         }
         return Response.Error("")
     }
+    suspend fun generateNumber(uid: String?):Response<String>
+    {
+        if (uid==null)
+            return Response.Error("User id is null")
+        val connectionNumber=ConnectionNumber(uid=uid, number = Random().nextInt(1000).toString())
+        runCatching {
+            return  when (val result = firestoreRepo.createNumber(connectionNumber))
+            {
+                is Response.Error -> Response.Error(result.message)
+                is Response.Success -> Response.Success(connectionNumber.number)
+            }
+        }
+        return Response.Error("Unknown Error")
+    }
 
 
-//    suspend fun loadEvents(): Response<List<Event>>
-//    {
-//        if (uid==null)
-//            return Response.Error("User id is null")
-//        runCatching {
-//            sharedPref.getString(SHARED_PREF_KEYS.USER_DATA)?.let { userJson->
-//                if(userJson.isBlank().not())
-//                {
-//                    val user= Gson().fromJson(userJson,
-//                            User::class.java)
-//                    sharedPref.set(SHARED_PREF_KEYS.USER_DATA,user.toJson())
-//                    if(user!=null && user.uid==uid)
-//                        return Response.Success(user)
-//                }
-//
-//            }
-//            return  firestoreRepo.getUserFromServer(uid)
-//        }
-//        return Response.Error("")
-//    }
+
 
     suspend  fun postEvent(images:List<Uri>, data: Event, onUpdate:(state: ScreenState)->Unit)
     {
@@ -113,6 +111,67 @@ class DataRepository(private val sharedPref: SharedPref, private val firestoreRe
                     eventDataSource
                 }
         ).flow
+    }
+
+    suspend fun getAllActivitiesForUid(uid:String?):Response<List<Event>>
+    {
+        if(uid==null) return Response.Error("User id is null")
+        return firestoreRepo.getAllActivitiesForUid(uid)
+    }
+    suspend fun getAllSavedActivitiesForUid(uid:String?):Response<List<Event>>
+    {
+        if(uid==null) return Response.Error("User id is null")
+        return firestoreRepo.getAllSavedActivitiesForUid(uid)
+    }
+    suspend fun loadAllConnections():Response<List<User>>{
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return Response.Error("User id is null")
+        return firestoreRepo.loadAllConnections(uid)
+    }
+    suspend fun loadConnectionsForDate(date:Long):Response<List<User>>{
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return Response.Error("User id is null")
+        return firestoreRepo.loadConnectionsForDate(uid,date)
+    }
+    suspend fun createConnection(number: String): Response<out Any>
+    {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return Response.Error("User id is null")
+        val result=firestoreRepo.getUserIdByNumber(number)
+        if(result is Response.Error)
+            return result
+        val targetUserId= (result as Response.Success).data!!
+        if(firestoreRepo.hasInMyContactsList(uid,targetUserId) is Response.Success)
+            return Response.Error("Already in contact list")
+        if(targetUserId==uid) return Response.Error("Same Id Error")
+        return firestoreRepo.createConnection(Connection(uid=uid,targetUid=targetUserId,ids= listOf(uid,targetUserId)))
+
+    }
+
+
+
+    suspend fun confirmBooking(docId: String?, uid: String?):Response<Unit>
+    {
+        if(uid==null)  return Response.Error("User id is null")
+        return firestoreRepo.bookEvent(docId!!,uid)
+
+    }
+
+    suspend fun loadAttendList(eventDocID: String):Response<List<String>>
+    {
+        return firestoreRepo.getAttendList(eventDocID)
+    }
+
+   suspend fun getEventDetails(docId: String):Response<Event>
+    {
+      return firestoreRepo.getEventDetails(docId)
+    }
+
+    suspend fun deleteConnection(uid:String?,targetUid:String):Response<out Any>
+    {
+        if(uid==null)return Response.Error("User Id Null")
+        return firestoreRepo.deleteConnection(uid,targetUid)
+    }
+   suspend fun deleteEvent(docId: String):Response<out Any>
+    {
+        return firestoreRepo.deleteEvent(docId)
     }
 
 }

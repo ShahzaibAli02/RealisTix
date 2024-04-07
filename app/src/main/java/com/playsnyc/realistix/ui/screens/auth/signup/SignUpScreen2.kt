@@ -21,7 +21,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +56,7 @@ import com.playsnyc.realistix.ui.composables.RoundProgress
 import com.playsnyc.realistix.ui.theme.MyPerColors
 import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.MyFonts
-import com.screen.mirroring.extensions.roundClickable
+import com.playsnyc.realistix.extensions.roundClickable
 
 @Composable fun SignUpScreen2(viewModel: SignUpScreenViewModel)
 {

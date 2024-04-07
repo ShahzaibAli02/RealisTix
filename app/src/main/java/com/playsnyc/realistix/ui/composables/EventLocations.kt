@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -26,11 +27,12 @@ import com.playsnyc.realistix.ui.theme.MyColors
 
 @Composable fun EventLocations(
     modifier: Modifier = Modifier,
+    defaultLocation:String?=null,
     onEventClicked: (selectedEvent: String) -> Unit,
 )
 {
 
-    var selectedEvent by rememberSaveable { mutableStateOf("") }
+    var selectedEvent=defaultLocation?:""
     val location1 = "Venue"
     val location2 = "Online"
     val location3 = "To be announced"

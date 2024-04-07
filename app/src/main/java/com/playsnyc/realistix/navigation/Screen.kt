@@ -11,9 +11,11 @@ sealed class Screen(val route: String) {
     object CreateEventScreen2 : Screen("create_event_2")
     object EventScreenDetail : Screen("event_screen_detail")
     object EventBookingScreen : Screen("event_booking_screen")
+    object ConnectionsScreen : Screen("conections_screen")
+    object MyActivitiesScreen : Screen("my_activities_screen")
 
 
-    fun args(vararg args: String): String {
+    fun args(vararg args: String?): String {
         val argsString = args.joinToString("/")
         return "$route/$argsString"
     }

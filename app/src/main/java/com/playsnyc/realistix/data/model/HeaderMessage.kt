@@ -12,3 +12,7 @@ fun HeaderMessage.Companion.Error(message:String):HeaderMessage
 {
     return HeaderMessage(backGroundColor=Color.Red, message = message)
 }
+fun HeaderMessage.Companion.Success(message:String):HeaderMessage
+{
+    return HeaderMessage(backGroundColor= MyPerColors._03BF62, message = message)
+}

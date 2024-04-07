@@ -1,4 +1,4 @@
-package com.playsnyc.realistix.ui.screens.contact
+package com.playsnyc.realistix.ui.screens.discover
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 
 @Composable
- fun ContactScreen()
+ fun DiscoverScreen()
 {
 
      val typography=MaterialTheme.typography

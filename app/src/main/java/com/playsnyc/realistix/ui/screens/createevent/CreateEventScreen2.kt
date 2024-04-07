@@ -102,7 +102,6 @@ import java.util.Locale
     val selectedImages by viewModel.selectedImages.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val coroutineScope= rememberCoroutineScope()
     val pickImagesLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.PickMultipleVisualMedia(5),
     ) { uris ->

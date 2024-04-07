@@ -19,6 +19,7 @@ data class Event(var uid:String,
                  var capacity:Int,
                  var images:List<String>,
                  var event_created_date:Timestamp,
+                 var attandesUid:List<String>,
 )
 {
     constructor():this(
@@ -37,7 +38,8 @@ data class Event(var uid:String,
             currency="$",
             capacity=0,
             emptyList(),
-            event_created_date= Timestamp.now()
+            event_created_date= Timestamp.now(),
+            emptyList()
 
     )
 }

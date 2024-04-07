@@ -15,13 +15,13 @@ enum class BottomNavItems(
             R.drawable.home_unselected,
             "Home"
     ),
-    Discover(
-            "Discover",
-            R.drawable.discover_selected,
-            R.drawable.discover_unselected,
-
-            "Discover"
-    ),
+//    Discover(
+//            "Discover",
+//            R.drawable.discover_selected,
+//            R.drawable.discover_unselected,
+//
+//            "Discover"
+//    ),
     Contact(
             "Contact",
             R.drawable.contact_selected,

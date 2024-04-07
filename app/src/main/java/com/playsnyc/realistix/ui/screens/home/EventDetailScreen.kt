@@ -61,6 +61,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
+import com.google.firebase.auth.FirebaseAuth
 import com.playsnyc.realistix.R
 import com.playsnyc.realistix.data.model.Event
 import com.playsnyc.realistix.data.model.isLoading
@@ -74,17 +75,28 @@ import com.playsnyc.realistix.ui.theme.RealisTixTheme
 import com.playsnyc.realistix.utils.DateTimeFormmater
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable fun EventDetailScreen(
+
+var isMyEvent: Boolean = false
+var alreadyBooked: Boolean = false
+@OptIn(ExperimentalMaterialApi::class) @Composable fun EventDetailScreen(
     navController: NavController,
     viewModel: HomeViewModel = koinViewModel(),
 )
 {
 
-    val event:Event  = viewModel.currentEvent?: Event()
+    val event: Event = viewModel.currentEvent ?: Event()
     val typography = MaterialTheme.typography
     val uistate by viewModel.uiState.collectAsState()
 
+    val attendList by viewModel._attandeList.collectAsState()
+    val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+    isMyEvent = event.uid == uid
+    alreadyBooked = attendList.contains(uid)
+
+    LaunchedEffect(Unit) {
+        viewModel.loadAttendList(event.docId)
+    }
     Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,7 +107,16 @@ import org.koin.androidx.compose.koinViewModel
                 text = event.name,
                 style = typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
         )
-        SignUpEvent(event){
+        SignUpEvent(
+                event = event,
+                attendList = attendList
+        ) {
+
+            if(isMyEvent)
+            {
+                navController.navigate(Screen.CreateEventScreen.route+"?eventDocId="+event.docId)
+                return@SignUpEvent
+            }
             navController.navigate(Screen.EventBookingScreen.route)
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -105,27 +126,29 @@ import org.koin.androidx.compose.koinViewModel
     }
 }
 
-@Composable
-fun EventDetailDescription(event: Event)
+@Composable fun EventDetailDescription(event: Event)
 {
-    val typography=MaterialTheme.typography
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(MyColors.current._FFFFFF)
-        .border(
-                BorderStroke(
-                        1.5.dp,
-                        MyColors.current._000000
-                ),
-                shape = RoundedCornerShape(10.dp)
-        )
-        .padding(10.dp)
-    ){
+    val typography = MaterialTheme.typography
+    Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MyColors.current._FFFFFF)
+                .border(
+                        BorderStroke(
+                                1.5.dp,
+                                MyColors.current._000000
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                )
+                .padding(10.dp)
+    ) {
         Text(
                 text = "Description",
-                style = typography.titleLarge
-                    .copy(color= MyColors.current._000000,
-                            fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
+                style = typography.titleLarge.copy(
+                            color = MyColors.current._000000,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                    )
         )
 
         Text(
@@ -137,31 +160,34 @@ fun EventDetailDescription(event: Event)
     }
 
 }
-@Composable
-fun EventDetailDateTime(event: Event)
+
+@Composable fun EventDetailDateTime(event: Event)
 {
-    val typography=MaterialTheme.typography
-    Column(modifier = Modifier
-        .background(MyColors.current._FFFFFF)
-        .fillMaxWidth()
-        .border(
-                BorderStroke(
-                        1.5.dp,
-                        MyColors.current._000000
-                ),
-                shape = RoundedCornerShape(10.dp)
-        )
-        .padding(10.dp)
-    ){
+    val typography = MaterialTheme.typography
+    Column(
+            modifier = Modifier
+                .background(MyColors.current._FFFFFF)
+                .fillMaxWidth()
+                .border(
+                        BorderStroke(
+                                1.5.dp,
+                                MyColors.current._000000
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                )
+                .padding(10.dp)
+    ) {
         Text(
                 text = "Date and Time",
-                style = typography.titleLarge
-                    .copy(color= MyColors.current._000000,
-                            fontWeight = FontWeight.Bold, textDecoration = TextDecoration.Underline)
+                style = typography.titleLarge.copy(
+                            color = MyColors.current._000000,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                    )
         )
 
         Text(
-                text ="${DateTimeFormmater.formateDate(event.date)} | ${DateTimeFormmater.formateTime(event.startTime)} - ${DateTimeFormmater.formateTime(event.endTime)}",
+                text = "${DateTimeFormmater.formateDate(event.date)} | ${DateTimeFormmater.formateTime(event.startTime)} - ${DateTimeFormmater.formateTime(event.endTime)}",
                 style = typography.titleMedium
         )
 
@@ -170,24 +196,26 @@ fun EventDetailDateTime(event: Event)
 
 }
 
-@Composable fun SignUpEvent(event: Event, onEventClick:(Event)->Unit)
+@Composable fun SignUpEvent(event: Event, attendList: List<String>, onEventClick: (Event) -> Unit)
 {
+
     val typography = MaterialTheme.typography
     var heightDp by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current.density
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .background(MyColors.current._FFFFFF)
         .padding(5.dp)
         .clickable {
             onEventClick(event)
-        }
-    ) {
+        }) {
 
         SubcomposeAsyncImage(
-                modifier = Modifier.weight(1.5f)
+                modifier = Modifier
+                    .weight(1.5f)
                     .height(heightDp),
-                contentScale= ContentScale.Crop,
+                contentScale = ContentScale.Crop,
                 model = event.images.firstOrNull(),
                 error = {
                     Image(
@@ -198,34 +226,46 @@ fun EventDetailDateTime(event: Event)
                 },
                 loading = {
                     Box {
-                        CircularProgressIndicator(modifier = Modifier
-                            .size(30.dp)
-                            .align(Alignment.Center))
+                        CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .align(Alignment.Center)
+                        )
                     }
                 },
                 contentDescription = "user image"
         )
-        Spacer(modifier = Modifier
-            .width(10.dp))
+        Spacer(
+                modifier = Modifier.width(10.dp)
+        )
         Column(modifier = Modifier
             .weight(1f)
             .wrapContentHeight()
-            .onGloballyPositioned {coordinates->
+            .onGloballyPositioned { coordinates ->
                 heightDp = (coordinates.size.height / density).toInt().dp
-            }, horizontalAlignment = Alignment.CenterHorizontally) {
+            },
+                horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                    text = "0 of your connections have joined",
-                    style = typography.titleMedium.copy(textAlign = TextAlign.Center,color= MyColors.current._000000,fontWeight = FontWeight.ExtraBold)
+                    text = "${attendList.size} people are participating ",
+                    style = typography.titleMedium.copy(
+                            textAlign = TextAlign.Center,
+                            color = MyColors.current._000000,
+                            fontWeight = FontWeight.ExtraBold
+                    )
             )
             Spacer(modifier = Modifier.height(10.dp))
-            ElevatedButton(onClick = {onEventClick(event) },
+            ElevatedButton(
+                    onClick = {
+                        onEventClick(event)
+                    },
                     shape = RoundedCornerShape(5.dp),
-                    colors= ButtonDefaults.elevatedButtonColors(containerColor = MyColors.current.primary_color),
+                    colors = ButtonDefaults.elevatedButtonColors(containerColor = MyColors.current.primary_color),
             ) {
 
                 Text(
-                        text = "Sign Up",
-                        style = typography.titleSmall.copy(color= MyColors.current._FFFFFF)
+                        text = if (isMyEvent) "Edit" else if (alreadyBooked) "Already Booked" else "Sign Up",
+                        style = typography.titleSmall.copy(color = MyColors.current._FFFFFF)
                 )
 
             }
@@ -235,28 +275,33 @@ fun EventDetailDateTime(event: Event)
     }
 }
 
-@Preview(showBackground = true)
-@Composable fun SignUpEventPrev()
+@Preview(showBackground = true) @Composable fun SignUpEventPrev()
 {
     RealisTixTheme {
-        SignUpEvent(Event().copy(name = "Shahzaib Ali", organizer = "Omni tech")){
+        SignUpEvent(
+                Event().copy(
+                        name = "Shahzaib Ali",
+                        organizer = "Omni tech"
+                ),
+                emptyList()
+        ) {
 
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun EventDetailScreenPrev()
+
+@Preview(showBackground = true) @Composable fun EventDetailScreenPrev()
 {
 
     RealisTixTheme {
         EventDetailScreen(
                 NavController(LocalContext.current),
                 HomeViewModel(
-                DataRepository(
-                        SharedPref(LocalContext.current),
-                        FireStoreRepository()
+                        DataRepository(
+                                SharedPref(LocalContext.current),
+                                FireStoreRepository()
+                        )
                 )
-        ))
+        )
     }
 }
