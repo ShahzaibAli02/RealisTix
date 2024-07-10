@@ -156,6 +156,10 @@ import org.koin.androidx.compose.koinViewModel
             {
                 navController.navigate(Screen.CreateEventScreen.route)
             }
+            if (it.id == R.id.updateAccount)
+            {
+                navController.navigate(Screen.SocialMediaScreen.route)
+            }
             if (it.id == R.id.your_activities)
             {
                 navController.navigate(Screen.MyActivitiesScreen.args(FirebaseAuth.getInstance().currentUser?.uid,"false"))

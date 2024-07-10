@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.playsnyc.realistix.data.enums.BottomNavItems
 import com.playsnyc.realistix.navigation.Screen
+import com.playsnyc.realistix.ui.screens.attandes.AttandeListScreen
 import com.playsnyc.realistix.ui.screens.contact.ContactScreen
 import com.playsnyc.realistix.ui.screens.discover.DiscoverScreen
 import com.playsnyc.realistix.ui.screens.createevent.CreateEventScreen
@@ -19,6 +20,7 @@ import com.playsnyc.realistix.ui.screens.home.HomeScreen
 import com.playsnyc.realistix.ui.screens.myactivities.MyActivitiesScreen
 import com.playsnyc.realistix.ui.screens.myconnections.MyConnectionScreen
 import com.playsnyc.realistix.ui.screens.profile.ProfileScreen
+import com.playsnyc.realistix.ui.screens.profile.SocialMediaScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable fun BottomNavigationView(
@@ -56,8 +58,16 @@ import org.koin.androidx.compose.koinViewModel
             val saved=it.arguments?.getString("saved")
             MyActivitiesScreen(uid!!,saved=="true")
         }
+
+        composable(Screen.AttandeeListScreen.route+"/{eventId}") {
+            val uid=it.arguments?.getString("eventId")
+            AttandeListScreen(navController, eventID = uid!!)
+        }
         composable(BottomNavItems.Profile.route) {
-            ProfileScreen(navController,onLogOut=onLogOut)
+            ProfileScreen(navController,viewModel = koinViewModel(viewModelStoreOwner = viewModelStoreOwner),onLogOut=onLogOut)
+        }
+        composable(Screen.SocialMediaScreen.route) {
+            SocialMediaScreen(navController,viewModel = koinViewModel(viewModelStoreOwner = viewModelStoreOwner))
         }
 
         composable(Screen.EventScreenDetail.route) {

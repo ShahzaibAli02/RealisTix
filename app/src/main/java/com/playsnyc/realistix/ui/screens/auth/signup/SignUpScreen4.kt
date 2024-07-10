@@ -70,7 +70,7 @@ import com.playsnyc.realistix.utils.MyFonts
                     .padding(0.dp),
                 fontSize = 38.sp,
                 lineHeight = 40.sp,
-                text = stringResource(R.string.select_ur_fvrt_events),
+                text = "Sync your account with other profiles!",
                 fontFamily = MyFonts.poppins(),
                 fontWeight = FontWeight.Bold
         )
@@ -140,6 +140,12 @@ import com.playsnyc.realistix.utils.MyFonts
             .fillMaxWidth(),
                 shape = RoundedCornerShape(size = 20.dp),
                 value = item.userName,
+                placeholder = {
+                    Text(
+                            text = "@",
+                    )
+
+                },
                 onValueChange = {
                     onNameChanged(it)
                 })

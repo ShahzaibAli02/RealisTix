@@ -174,10 +174,6 @@ class FireStoreRepository()
             querySnapshot.documents.forEach {
                 it.toCustomObject(Event::class.java)?.let { eventsList.add(it) }
             }
-            Log.d(
-                    "TAG",
-                    "getPaginatedEvents:EVENTS ${eventsList} "
-            )
             Response.Success(eventsList)
         }
         catch (e: Exception)
@@ -263,6 +259,36 @@ class FireStoreRepository()
 
                 }
             }
+            return Response.Success(list)
+        }
+        catch (e:Exception)
+        {
+            return Response.Error(e.localizedMessage?:"")
+        }
+    }
+
+
+
+
+    suspend fun loadAllAttendesForEvent(eventID:String):Response<List<User>>
+    {
+        val db = Firebase.firestore
+        try
+        {
+            val list= mutableListOf<User>()
+            val result=db.collection(FireStoreCollections.Events.name)
+                .whereEqualTo("docId", eventID)
+                .get().await().first()
+
+            val event=result.toCustomObject(Event::class.java)
+            event?.attandesUid?.forEach {
+                val user=getUserFromServer(it)
+                if (user is Response.Success)
+                {
+                    list.add(user.data!!)
+                }
+            }
+
             return Response.Success(list)
         }
         catch (e:Exception)
@@ -366,6 +392,20 @@ class FireStoreRepository()
         } catch (e:Exception)
         {
 
+            Response.Error(e.localizedMessage?:"")
+        }
+    }
+
+    suspend fun updateUser(user: User): Response<out Any>
+    {
+        val db = Firebase.firestore
+        return try
+        {
+            val document=db.collection(FireStoreCollections.Users.name).whereEqualTo("uid",user.uid).get().await().firstOrNull()
+            db.collection(FireStoreCollections.Users.name).document(document!!.id).set(user).await()
+            Response.Success("")
+        } catch (e:Exception)
+        {
             Response.Error(e.localizedMessage?:"")
         }
     }

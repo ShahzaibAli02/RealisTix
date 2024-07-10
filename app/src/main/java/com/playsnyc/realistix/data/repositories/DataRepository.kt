@@ -30,21 +30,15 @@ class DataRepository(private val sharedPref: SharedPref, private val firestoreRe
         if (uid==null)
             return Response.Error("User id is null")
         runCatching {
-            sharedPref.getString(SHARED_PREF_KEYS.USER_DATA)?.let { userJson->
-                if(userJson.isBlank().not())
-                {
-                    val user= Gson().fromJson(userJson,
-                            User::class.java)
-                    sharedPref.set(SHARED_PREF_KEYS.USER_DATA,user.toJson())
-                    if(user!=null && user.uid==uid)
-                        return Response.Success(user)
-                }
-
-            }
             return  firestoreRepo.getUserFromServer(uid)
         }
         return Response.Error("")
     }
+    suspend fun updateUser(user:User):Response<out Any>
+    {
+        return firestoreRepo.updateUser(user)
+    }
+
     suspend fun generateNumber(uid: String?):Response<String>
     {
         if (uid==null)
@@ -126,6 +120,9 @@ class DataRepository(private val sharedPref: SharedPref, private val firestoreRe
     suspend fun loadAllConnections():Response<List<User>>{
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return Response.Error("User id is null")
         return firestoreRepo.loadAllConnections(uid)
+    }
+    suspend fun loadAllAttande(eventId:String):Response<List<User>>{
+        return firestoreRepo.loadAllAttendesForEvent(eventId)
     }
     suspend fun loadConnectionsForDate(date:Long):Response<List<User>>{
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return Response.Error("User id is null")

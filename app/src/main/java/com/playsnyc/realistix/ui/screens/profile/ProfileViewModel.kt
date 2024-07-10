@@ -8,6 +8,7 @@ import com.playsnyc.realistix.R
 import com.playsnyc.realistix.data.model.Error
 import com.playsnyc.realistix.data.model.ProfileOption
 import com.playsnyc.realistix.data.model.ScreenState
+import com.playsnyc.realistix.data.model.SocialMediaItem
 import com.playsnyc.realistix.data.model.UIState
 import com.playsnyc.realistix.data.model.User
 import com.playsnyc.realistix.data.repositories.DataRepository
@@ -35,11 +36,11 @@ class ProfileViewModel(val dataRepository: DataRepository) : ViewModel()
                     title = "Create Events",
                     image = R.drawable.baseline_share_24
             ),
-//            ProfileOption(
-//                    id = R.id.editProfile,
-//                    title = "Edit Profile",
-//                    image = R.drawable.baseline_key_24
-//            ),
+            ProfileOption(
+                    id = R.id.updateAccount,
+                    title = "Edit Social Media Accounts",
+                    image = R.drawable.baseline_switch_account_24
+            ),
             ProfileOption(
                     id = R.id.your_activities,
                     title = "Your Activities",
@@ -68,6 +69,29 @@ class ProfileViewModel(val dataRepository: DataRepository) : ViewModel()
     )
 
 
+    fun updateSocialMediaList(list:List<SocialMediaItem>,onSuccess:()->Unit)=viewModelScope.launch{
+        uiState.value.data?.let {
+            updateUiState { state = ScreenState.Loading() }
+            it.socialMedia=list
+            when (val result = dataRepository.updateUser(it))
+            {
+                is Response.Error ->
+                {
+                    updateUiState {
+                        state = ScreenState.Error(result.message)
+                    }
+                }
+
+                is Response.Success ->
+                {
+                    onSuccess()
+                    updateUiState {
+                        state = ScreenState.None();
+                    }
+                }
+            }
+        }
+    }
     fun loadUser() = viewModelScope.launch {
         updateUiState { state = ScreenState.Loading() }
         when (val result = dataRepository.getUser(FirebaseAuth.getInstance().uid))

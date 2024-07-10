@@ -216,6 +216,8 @@ fun getHeaderText(currentRoute: String?): String
 //        BottomNavItems.Discover.route -> "Discover"
         BottomNavItems.Contact.route -> "Contact"
         BottomNavItems.Profile.route -> "Profile"
+        Screen.SocialMediaScreen.route -> "Update accounts"
+        Screen.ConnectionsScreen.route -> "Add Connection"
          Screen.CreateEventScreen2.route -> "Create Event"
         Screen.EventScreenDetail.route, Screen.EventBookingScreen.route -> "Event"
         else ->
@@ -227,6 +229,8 @@ fun getHeaderText(currentRoute: String?): String
                 "Create Event"
             else if(currentRoute.contains(Screen.MyActivitiesScreen.route))
                 "Activities"
+            else if(currentRoute.contains(Screen.AttandeeListScreen.route))
+                "Attendee"
             else
                 ""
         }

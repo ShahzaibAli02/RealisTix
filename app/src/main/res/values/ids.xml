@@ -7,4 +7,5 @@
     <item name="termsConditions" type="id" />
     <item name="privacy_policy" type="id" />
     <item name="log_out" type="id" />
+    <item name="updateAccount" type="id" />
 </resources>

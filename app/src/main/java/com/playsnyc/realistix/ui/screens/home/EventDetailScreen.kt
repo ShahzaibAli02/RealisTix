@@ -117,6 +117,11 @@ var alreadyBooked: Boolean = false
                 navController.navigate(Screen.CreateEventScreen.route+"?eventDocId="+event.docId)
                 return@SignUpEvent
             }
+            if(alreadyBooked)
+            {
+                navController.navigate(Screen.AttandeeListScreen.args(event.docId))
+                return@SignUpEvent
+            }
             navController.navigate(Screen.EventBookingScreen.route)
         }
         Spacer(modifier = Modifier.height(10.dp))

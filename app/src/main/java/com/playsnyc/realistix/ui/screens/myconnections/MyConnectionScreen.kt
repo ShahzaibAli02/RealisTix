@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,12 +23,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
@@ -133,13 +136,24 @@ import java.util.Locale
                 )
 
             }
+            return
+        }
+        Box(modifier = Modifier.weight(1f)){
+            ConnectionsList(modifier = Modifier.fillMaxSize(),listConnections, onItemClick = {
+                navController.navigate(Screen.MyActivitiesScreen.args(it.uid,"false"))
+            }){
+                viewModel.removeUser(it.uid!!)
+            }
+            FloatingActionButton(modifier = Modifier.size(50.dp).align(Alignment.BottomEnd).padding(5.dp),onClick = {
+                navController.navigate(Screen.ConnectionsScreen.route)
+            }) {
+                Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = ""
+                )
+            }
         }
 
-        ConnectionsList(listConnections, onItemClick = {
-            navController.navigate(Screen.MyActivitiesScreen.args(it.uid,"false"))
-        }){
-            viewModel.removeUser(it.uid!!)
-        }
 
     }
 }
@@ -147,21 +161,28 @@ import java.util.Locale
 
 
 @Composable
-fun ConnectionsList(list:List<User>, onItemClick: (User) -> Unit, onRemove:(User)->Unit)
+fun ConnectionsList(modifier:Modifier = Modifier,list:List<User>, onItemClick: (User) -> Unit, onRemove:(User)->Unit)
 {
-    list.forEach {
-        Spacer(modifier = Modifier.height(10.dp))
-        UserContact(user=it, onItemClick = onItemClick, onRemove = onRemove)
+    Column(modifier = modifier){
+        list.forEach {
+            Spacer(modifier = Modifier.height(10.dp))
+            UserContact(user=it, onItemClick = onItemClick, onRemove = onRemove)
+        }
     }
+
 }
 
 @Composable fun UserContact(modifier: Modifier = Modifier, user: User,onItemClick:(User)->Unit,onRemove:(User)->Unit)
 {
     val typography = MaterialTheme.typography
     val context= LocalContext.current
-    Row(modifier = Modifier.background(color= MyPerColors._FFFFFF).fillMaxWidth().padding(5.dp).clickable {
-        onItemClick(user)
-    }){
+    Row(modifier = Modifier
+        .background(color = MyPerColors._FFFFFF)
+        .fillMaxWidth()
+        .padding(5.dp)
+        .clickable {
+            onItemClick(user)
+        }){
 
         SubcomposeAsyncImage(
                 modifier = modifier
@@ -199,10 +220,16 @@ fun ConnectionsList(list:List<User>, onItemClick: (User) -> Unit, onRemove:(User
         }
         Spacer(modifier = Modifier.width(5.dp))
         Text(
-                modifier=Modifier.align(Alignment.CenterVertically).background(MyPerColors._9A9A9A,shape= CircleShape).padding(horizontal = 5.dp)
+                modifier= Modifier
+                    .align(Alignment.CenterVertically)
+                    .background(
+                            MyPerColors._9A9A9A,
+                            shape = CircleShape
+                    )
+                    .padding(horizontal = 5.dp)
                     .roundClickable {
                         onRemove(user)
-                },
+                    },
                 text = "Remove",
                 style = typography.titleSmall
         )

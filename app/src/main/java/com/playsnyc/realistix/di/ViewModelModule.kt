@@ -1,6 +1,7 @@
 package com.playsnyc.realistix.di
 
 
+import com.playsnyc.realistix.ui.screens.attandes.AttandeListScreenViewModel
 import com.playsnyc.realistix.ui.screens.auth.login.LoginScreenViewModel
 import com.playsnyc.realistix.ui.screens.auth.signup.SignUpScreenViewModel
 import com.playsnyc.realistix.ui.screens.contact.ContactScreenViewModel
@@ -21,4 +22,5 @@ val viewModelModule = module {
   viewModel { ContactScreenViewModel(get()) }
   viewModel { MyConnectionScreenViewModel(get()) }
   viewModel { MyActivitiesScreenViewModel(get()) }
+  viewModel { AttandeListScreenViewModel(get()) }
 }
